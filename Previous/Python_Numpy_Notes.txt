@@ -1,0 +1,324 @@
+
+
+https://www.youtube.com/watch?v=3Fp1zn5ao2M
+Into to Numpy and Matplotlib
+
+run python in shell command line
+ipython -pylab
+
+## help function 
+    plot?  -> give help page
+    plot?? -> give python code
+
+## bookmark a directory
+    bookmark bookmmarkname 
+    change to other dir
+    cd bookmmarkname   
+    
+    bookmark -l  (list all bookmarks)
+    bookmark?
+
+#run a python script
+run -i test.py  # i for interactive. global variables will be available after the excution of the file.
+    
+### NumPy: http://numpy.scipy,org/
+NDArray &UFunc
+
+### SciPy: http://docs.scipy.org/docs
+numpy example list with doc - scipy.org
+linalg, stats, interpolate,
+cluster, speacial, spatial
+io, fftpack, odr, 
+ndimage, sparse, integrate,
+singla, optimize, weave
+    
+    
+### Code    
+from numpy import linspace, pi, sin, cos, cumsum,
+from pylab import plot, who, subplot, legend, title
+
+from numpy import *
+__version__
+
+from numpy import arrary
+arange(11.) -> 0 to 11 floating data
+arange(11) 0-> INTEGER
+
+x= linspace(0, 2*pi, 101)
+y=sin(x)
+
+plot(x,y)
+show()
+
+### Matplotlib: matplotlib.sourceforge.net
+#gallery is very nice
+plot
+fig1 = figure()
+plot(y)
+
+fig2 = figure()
+plot(x)
+
+subplot(2,1,1) - column, row, active 
+hold(False)
+legend()
+legend(['sin', 'cos'])
+xlabel('radians')
+ylabel('amplitude', fontsize='large')
+title('title')
+clf() <- clear plot window
+close() <-close active window
+close('all') <- close all windows
+
+### Image display
+from scipy.mic import lena
+img = lena()
+
+imshow(img, extent=[-25, 25, -25, 25], cmap=cm.bone)
+colorbar()
+
+### histogram
+hist(randn(1000))
+
+### 3D plot
+x,y = mygrid[-5:5:35j, 0:10:35j]
+x=x*sin(x)*cos(0.25*y)
+fig=figure()
+ax=fig.gca(projection='3d')
+ax.plot_surface(x,y,x,rstride=1,cstride=1, cmap=cm.jet)
+xlabel('x'); ylabel('y')
+
+savefig("myplot.png")
+show() --> in a sricpt to show the plots.
+
+### Display surface plot
+from mayavi import mlab
+mlab.surf(x,y,s)
+mlab.scalarbar()
+mlab.axes()
+
+matplotlib.sourceforge.net/users/screenshots.heml
+gallery: matplotlib.sourceforge.net/gallery.html
+
+########## Introduction to NumPy Arrays
+
+from  numpy import array
+a=array([0,1,2,3])
+
+a.itemsize
+a.size
+size(a)
+
+type(a)
+a.dtype
+
+a.shape
+shape(a)
+
+####array indexing
+a[0]
+#fill
+a.fill(0); a
+a[:]=1; a
+
+a.dtype
+a[0]=10.6; a #data type issue
+
+#### array slicing
+a=array([10,11,12,13,14])
+a[1:3]; a; #3 is excluded
+a[1:-2]; a; #negative indices to count backwards from the end
+a[-4:3]; a; 
+
+a[:3]; # first 3 
+a[-2:] # last two
+a[::2]; # every even indices
+a[1::];  # every odd indices
+
+#Multi-dimensional arrays
+a = array([[0,1,2,3],[10,11,12,13]]); a
+a.shape
+a.size
+a.ndim
+a[1,3];  #2st row and 2rd column
+a[1];    #2nd row
+
+#### Arrays from/to ASCII files
+## Basic pattern
+file = open('myfile.txt') # create a file handler
+data = []                 #create a list for data
+for line in file:
+    fields=line.split()
+    row_data = [float(x)for a in fields]
+    
+    data.append(row_data)
+    
+data = array(data);  #convert the list of list into a 2D array;
+file.close()
+
+## Arrays from/to txt files
+## Read Data.txt
+array = loadtxt('Data.txt', skiprows=1, dtype=int, delimiters='.',
+                   usecols = (0,1,2,4) )
+
+savetxt("filename"); #to save a file
+
+### Other file format
+FileFormat      PackageNames        Functions
+txt             numpy               loadtxt, savetxt, genfromtxt, fromfile, tofile
+csv             csv                 reader, writer
+matlab          scipy.oi            loadmat, savemat
+hdf             pytables, h5py
+NetCDF          netCDF4, scipy.io.netcdf    netcdF4.Dataset, scipy.io,netcdf.netcdf_file
+
+## Different format
+FileFormat      PackageNames            Comments
+wave            scipy.io.wave           audio files
+LAS/SEG-y       scipy cookbook.EPD      Data files in Geophysics
+jpeg, pgn       PIL, scipy.misc,pilutil Common image format
+fits            pyfits                  image files in Astronomy
+
+### Array slicing
+a = array([[0,1,2,3,4,5],[10,11,12,13,14,15],[20,21,22,23,24,25],
+          [30,31,32,33,34,35],[40,41,42,43,44,45],[50,51,52,53,54,55]]); a
+a[0,3:5]     #array([3,4])
+a[4:,4:]     #array([[44,45],[54,55]])
+a[:,2]       #column 2 = 3rd column
+a[2::2,::2]  #Row: 2&4, Col: 0, 2 &4
+
+#slices are references to memory in the original array
+# Changing values in a slice also changes in the original array
+
+a = array((0,1,2,3,4))
+b = a[2:4]; b
+b[0]=10; a; #values in a has been changed
+
+## a.base or b.base tell whether it is original array or reference to an array
+a = array((1,2,3,4))
+b=a[:2]
+a.base
+print a.base
+print b.base
+
+## create an own copy;
+c=a.copy()
+c[0]=-10; c; a;
+
+a = array((1,2,3,4))
+d=array(a[:2]); d; a
+d[0]=13; d; a
+
+d=array(a,copy=False); d; a
+d[0]=13; d; a
+
+#index by position
+a=arange(0,80,10); a; #array([ 0, 10, 20, 30, 40, 50, 60, 70])
+
+indices=[1,2,-3]
+y=a[indices]
+print y; #[10, 20, 50]
+
+#index with boolean
+mask=array([0,1,1,0,0,1,0,0],dtype=bool); mask
+print a[mask];  #[10, 20, 50]
+
+mask2 = (a<30) & (a>0); mask2
+print a[mask2]; #[0,10,20]
+
+#Example of using boolean indexing
+x = linspace(0.2*pi, 21)
+y=sin(x)
+plot(x,y)
+x = linspace(0.2*pi, 21)
+y=sin(x)
+plot(x,y)
+
+mask = y>=0
+plot(x[mask], y[mask])
+
+
+### Fnacy indexing in 2-D
+## unlike slicing, fancy index creates copies instead of a view.
+a = array([[0,1,2,3,4,5],[10,11,12,13,14,15],[20,21,22,23,24,25],
+          [30,31,32,33,34,35],[40,41,42,43,44,45],[50,51,52,53,54,55]]); a
+# or
+a = arange(36.)
+a.shape = (-1, 6)
+
+a[(0,1,2,3,4),(1,2,3,4,5)]
+a[3:,[0,2,5]]
+mask=array([1,0,1,0,0,1],dtype=bool)
+mask
+a[mask,2]
+
+a
+a[:2,:2] # give a 2 by a array
+a[(0,1,),(0,1)] # gives 2 elements from diagnal
+
+y= a[:3]           #extract rows
+y = a[condition]   #extract rows meeting condition
+
+# transpose a matrix
+a.T                     # transpose
+a.transpose()  
+a.T.copy();             #creates a copy
+
+#complex number
+1+1j
+
+###where
+#1 dimensional
+a = array([0,12,5,20])
+a>10
+where(a>10)
+
+#n dimensions
+a = array([[0,12,5,200], [1,2,11,15]])
+loc = where(a>10); loc
+print loc
+
+#Array calculation methods
+a = array([[1,2,3],[4,5,6]])
+sum(a)
+a.sum()
+
+sum(a, axis=0)
+a.sum(axis=0)
+
+sum(a, axis=-1)
+
+#product
+a.prod(axis=0)
+prod(a, axis=0)
+
+#Min/Max
+ a = array([2., 3., 0., 1.])
+a.min(axis=0)
+amin(a, axis=0)
+#find index of minmum value
+a.argmin(axis=0)
+
+#Mean
+a = array([[1,2,3],[4,5,6]])
+a.mean(axis=0)
+average(a,axis=0)
+average(a,weights=[1,2],axis=0)
+#standard deviation
+a.std(axis=0)
+#Variance
+a.var(axis=0)
+
+# Clip - limit values to a range
+a = array([[1,2,3],[4,5,6]])
+a.clip(3,5)
+
+#peak to peak - calculate max-min for array along columns
+a.ptp(axis=0)
+a.ptp(axis=None) #calculate Max-min for the entire array
+
+#round values in an array
+a = array([1.35,2.5,1.5])
+a.round()
+a.round(decimals=1)
+
+

@@ -1,0 +1,140 @@
+https://www.youtube.com/watch?v=5JnMutdy6Fw
+Pandas-Tutorial.zip
+https://github.com/brandon-rhodes/pycon-pandas-tutorial
+  git clone https://github.com/brandon-rhodes/pycon-pandas-tutorial.git
+
+  
+import pandas as pd
+cd pycon-pandas-tutorial/
+bookmark pandastutorial
+bookmark -l
+
+titles = pd.DataFrame.from_csv('data/titles.csv', index_col=None, encoding='utf-8')
+h = titles.head(10)
+
+cast=pd.DataFrame.from_csv('data/cast.csv', index_col=None)
+cast.head()
+cast.tail(10)
+
+len(titles)
+
+h = titles.head(10)
+h['title']
+h['year']//10
+h['year']//10*10 # in decade
+h.year
+h.year>1985
+h[(h.year>1985) & (h.year<2000)]
+
+t = titles
+t[t.title == 'Macbeth'].sort(['year', 'title']).tail()
+t.year.order() #.order is for series and .sort is for dataframe
+
+h=cast.head()
+h1=h[h.n.notnull()]; h1
+
+h2=h[h.n.isnull()]; h2
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+## string operation in Pandas-Tutorial
+h.title.str.len()
+h.title.str.startswith('Suu')
+h[h.title.str.startswith('Suu')]
+
+## http://pandas.pydata.org/pandas-docs/stable/api.html
+
+titles.year.value_counts()
+titles.year.value_counts().head()
+s = titles.year.value_counts().sort_index().plot()
+
+c=cast
+c= c[c.character =='Kermit the Frog']
+c.plot(x='year', y='n', kind='scatter')
+
+### Groupby
+c=cast
+c=c[c.name =='George Clooney']
+c.groupby(['title','year', 'character'])
+c.groupby(['title','year', 'character']).size()
+c.groupby(['year']).size().plot(kind='bar', ylim=0)
+c.groupby(c.year//10*10).n.size()  # by decade
+
+### unstack, stack, use .set_index()
+c=cast
+c=c[(c.character =='Kermit the Frog')|(c.character =='Oscar the Grouch')]
+g=c.groupby(['character',c.year//10*10]).size()
+g.unstack(1)
+u=g.unstack(0).fillna(0)
+u['Kermit the Frog']-u['Oscar the Grouch']
+u.stack()
+
+df = g.unstack('character')
+df['extra']=1
+df=df.set_index('extra',drop=True, append=True)
+df.unstack(0)
+
+### Plot difference between #of roles between actor and actress
+c=cast
+c.head()
+c=c.groupby(['year', 'type']).size()
+c=c.unstack('type'); c
+(c.actor-c.actress).plot()
+
+### Plot fraction of roles that actor play
+c=cast
+c=c.groupby(['year', 'type']).size()
+c=c.unstack('type')
+(c.actor/(c.actor+c.actress)).plot(ylim=[0,1])
+
+### Plot the fraction of supporting roles(n=2) that has been 'actor'
+c=cast
+c=c[c.n==2]
+c=c.groupby(['year', 'type']).size()
+c=c.unstack('type')
+(c.actor/(c.actor+c.actress)).plot(ylim=[0,1])
+
+### Build a plot with a line for each rank=1 to 3, where line shows fractor of the rank of role actor played
+c=cast
+c=c[c.n<=3]
+c=c.groupby(['year', 'type','n']).size()
+c=c.unstack('type')
+(c.actor/(c.actor+c.actress)).unstack('n').plot(ylim=[0,1])
+
+
+###Dates
+release_dates =pd.DataFrame.from_csv('data/release_dates.csv', index_col=None, encoding='utf-8', parse_dates=['date'])
+r = release_dates.head()
+r.date.dt.dayofweek
+r.date.dt.year
+r.date.dt.month
+
+#merge
+c=cast
+c=c[c.name=='Ellen Page']
+c.merge(release_dates)
+
+#Pivot
+r=release_dates
+r=r[r.title.str.startswith('Star Wars: Episode')]
+r=r[r.country.str.startswith('U')]
+r.pivot('title','country','date')
+
+#merge with self
+c=cast
+c=c[c.n<=2]
+c=c[c.name =='Cary Grant']
+c=c.merge(cast, on=['title','year'])
+c=c[c.n_y<=2]
+c=c[c.name_y !='Cary Grant']
+c
+
+#sales data
+sales1=pd.read_csv('sales1.csv')
+sales2=pd.read_csv('sales2.csv')
+col = sales2.Title.str.extract(r'\((.*)\)')
+sales2['currency'] = col.fillna(method='bfill')
+sales2
+

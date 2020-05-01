@@ -1,0 +1,33 @@
+#list comprehension
+[i+3 for i in range(10)]
+
+#### scalar math
+from theano import tensor as T
+
+x = T.scalar()
+y = T.scalar()
+z = x + y
+w = z * x
+a = T.sqrt(w)
+b = T.exp(a)
+c = a ** b
+d = T.log(c)
+
+### Vector Math
+from theano import tensor as T
+x = T.vector()
+y = T.vector()
+# Scalar math applied element wise
+a = x * y
+# vector dot product
+b = T.dot(x, y)
+
+### Matrix Math
+from theano import tensor as T
+x = T.matrix()
+y = T.matrix()
+a = T.vector()
+# Matrix-matrix product
+b = T.dot(x, y)
+# Matrix-vector product
+c = T.dot(x, a)
