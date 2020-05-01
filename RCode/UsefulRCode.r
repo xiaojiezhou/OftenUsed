@@ -1,6 +1,16 @@
-##### Filename:  /Users/x644435/Desktop/RCode/UsefulRCode.r
-# source("/nfs/science/users/xiaojiez/Rcode/UsefulRCode.r")
-# source("/Users/x644435/Desktop/RCode/UsefulRCode.r")
+##### Filename:  /Users/x644435/Desktop/OftenUsed/RCode/UsefulRCode.r
+# source("/nfs/science/users/xiaojiez/OftenUsed/RCode/UsefulRCode.r")
+# source("/Users/x644435/Desktop/OftenUsed/RCode/UsefulRCode.r")
+
+######## Write to csv.gz file #########
+gzname=paste0(path, paste0('adata/sim_all/Sim_DIV', sDiv,'.csv.gz'))
+gz1 <- gzfile(gzname, "w")
+write.csv(df_em, gz1)
+close(gz1)
+######## Read a list of csv files ######
+df <-files %>% 
+  map_df(~read_csv(.,  col_types = cols(.default = "n")))
+
 
 #####Example 1:  Multiple plots on one page#####
 library(ggplot2)
@@ -45,6 +55,15 @@ get_legend<-function(myggplot){
   legend <- tmp$grobs[[leg]]
   return(legend)
 }     
+
+##### Example 2a: ggplot - historgram  ########
+
+hist_var='nL10'
+ggplot(data=a2, aes_string(x= hist_var)) + my.theme() +
+  geom_histogram(y = 100*(..count..)/sum(..count..), bins = 15,  color="black", fill='blue') + 
+  ggtitle(paste("title text")) +
+  scale_x_continuous(name="\n # of distinct L10 shopped") + 
+  scale_y_continuous(name="Percent") 
 
 ##### Example 3: Multple plots using gridExtra #####
 #http://www.sthda.com/english/wiki/ggplot2-easy-way-to-mix-multiple-graphs-on-the-same-page-r-software-and-data-visualization#arranging-multiple-graphs-using-cowplot
@@ -105,3 +124,14 @@ junk = a3 %>%
 ##### Example 7:  Data manupulations ######
 #----rename a set of columns
 setnames(dat, old=paste0("COUPON_RELEVANCY_SCORE", 1:ncoupons), new=paste0("CPRE_RELSCORE", 1:ncoupons))
+
+#----rename a set of columns----
+setnames(dat, old=paste0("COUPON_RELEVANCY_SCORE", 1:ncoupons), new=paste0("CPRE_RELSCORE", 1:ncoupons))
+
+#---- extract numerical/char colnames----
+print("variable names in the data:");  unique(gsub('[0-9]+', '', colnames(dat))) 
+print("Numeric columns:"); colnames(select_if(dat,is.numeric)) 
+print("Character columns:"); colnames(select_if(dat,is.character)) 
+
+
+

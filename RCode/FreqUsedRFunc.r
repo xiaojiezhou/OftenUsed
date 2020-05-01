@@ -1,13 +1,57 @@
-##### Filename:  /nfs/science/users/xiaojiez/Rcode/FreqUsedRFunc.r
-# source("/nfs/science/users/xiaojiez/Rcode/FreqUsedRFunc.r")
-# source("/Users/x644435/Desktop/RCode/FreqUsedRFunc.r")
+# devtools::install("/nfs/science/users/xiaojiez/OftenUsed/RCode/myRUtilityPackage/")
+# devtools::document()
+# library(myRUtilityPackage)
+
+##### Filename:  /nfs/science/users/xiaojiez/OftenUsed/RCode/FreqUsedRFunc.r
+# source("/nfs/science/users/xiaojiez/OftenUsed/RCode/FreqUsedRFunc.r")
+# source("/Users/x644435/Desktop/OftenUsed/RCode/FreqUsedRFunc.r")
 
 library(grid)
 library(tidyverse)
 library(reshape2)
 library(feather)
+library(scales)
+library(data.table)
+
+options(stringsAsFactors=FALSE)
+
 
 ################ General section: ######################
+###### Begin: headtail: return n rows of head and tail  ######
+#<- Example:  my_head(dat, n=3)
+#' @export
+my_head = function(dat, n=2){
+  return(rbind(head(dat,n=n), tail(dat,n=n)))
+}
+### end: my_head(dat, n=3)
+
+
+###### Begin: my_write_csv:  simplified notation to write a csv file  ######
+#<- Example:  my_write_csv(dat)
+my_write_csv = function(dat){
+  write_csv(dat, path= paste0(path, 'results/', Sys.Date(), '_', deparse(substitute(dat)), '.csv'))
+}
+### end: my_write_csv(dat)
+
+
+###### Begin: write.xlsx.MultipleData:  write multiple datasets to 1 excel file ######
+#<- Example:  write.xlsx.MultipleData("fname.xls", mtcars, Titanic, AirPassengers)
+write.xlsx.MultipleData <- function (file, ...)
+{
+  require(xlsx, quietly = TRUE)
+  objects <- list(...)
+  fargs <- as.list(match.call(expand.dots = TRUE))
+  objnames <- as.character(fargs)[-c(1, 2)]
+  nobjects <- length(objects)
+  for (i in 1:nobjects) {
+    if (i == 1)
+      write.xlsx(objects[[i]], file, sheetName = objnames[i])
+    else write.xlsx(objects[[i]], file, sheetName = objnames[i],
+                    append = TRUE)
+  }
+}
+###end: write.xlsx.MultipleData(file, ...)
+
 ###### Begin: mode(x):  Calculate mode ######
 #--- example: dat %>% group_by(week_id %>% summarise(most_freq=mode(store_id))
 mode <- function(codes)  which.max(tabulate(codes))
@@ -149,6 +193,22 @@ BiClass_OptCut = function(prob.pred, event.obs, tr.p=0.5){
 
 
 ################ Plot section: ######################
+###### Begin: ggplotRegression:  ggplot with regression slope ######
+ggplotRegression <- function(fit){
+  
+  require(ggplot2)
+  
+  ggplot(fit$model, aes_string(x = names(fit$model)[2], y = names(fit$model)[1])) +
+    geom_point() +
+    stat_smooth(method = "lm", col = "red") +
+    labs(title = paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 5),
+                       " Slope =",signif(fit$coef[[2]], 5),
+                       " P =",signif(summary(fit)$coef[2,4], 5)))
+}
+
+# ggplotRegression(lm(chng_TTL_BASKETS ~ chng_IN_NBASKETS, data = pltdat))
+###### End:  ggplotRegression:  ggplot with regression slopes
+
 ###### Begin: plot2Axis() - Plot with secondard axis ##### 
 # To use it:  
 #
@@ -237,16 +297,17 @@ my.theme =   function (base_size = 14, base_family = "")
 # To use it:
 # ggplot() + my.theme1()
 
-my.theme1 =   function (base_size = 14, base_family = "") {
-  theme_bw() +
+my.theme1 = function (base_size = 12, base_family = "") {
+  theme_bw(base_size = base_size, base_family = base_family) +
     theme(panel.grid.major = element_line(colour = "#d3d3d3"),
           panel.grid.minor = element_blank(),
           panel.border = element_blank(), panel.background = element_blank(),
-          plot.title = element_text(size = 14, family = "Tahoma", face = "bold"),
-          text=element_text(family="Tahoma"),
-          axis.title = element_text(face="bold"),
-          axis.text.x=element_text(colour="black", size = 11),
-          axis.text.y=element_text(colour="black", size = 9),
+          plot.title = element_text(size = base_size, family = "Tahoma", face = "bold", hjust=0),
+          plot.subtitle = element_text(size = base_size-2),
+          text=element_text(family="Tahoma", size= base_size-2),
+          axis.title = element_text(face="bold", size= base_size-2),
+          axis.text.x=element_text(colour="black", size = base_size-3),
+          axis.text.y=element_text(colour="black", size = base_size-3),
           axis.line = element_line(size=0.5, colour = "black"))
 }
 
