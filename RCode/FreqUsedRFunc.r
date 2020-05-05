@@ -26,11 +26,17 @@ my_head = function(dat, n=2){
 ### end: my_head(dat, n=3)
 
 
-###### Begin: my_write_csv:  simplified notation to write a csv file  ######
+###### Begin: my_write_csv & my_write_csv_gz:  simplified notation to write a csv file  ######
 #<- Example:  my_write_csv(dat)
 my_write_csv = function(dat){
   write_csv(dat, path= paste0(path, 'results/', Sys.Date(), '_', deparse(substitute(dat)), '.csv'))
 }
+
+my_write_csv_gz = function(dat){
+  fname = paste0(path, 'results/', Sys.Date(), '_', deparse(substitute(dat)), '.csv.gz')
+  fwrite(dat, file = fname, compress='gzip')
+}
+
 ### end: my_write_csv(dat)
 
 

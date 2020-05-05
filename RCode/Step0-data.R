@@ -1,26 +1,18 @@
-
 ########################### Step0-data.R ##################### 
 # File name:  Step0-data.R
-# Path: /nfs/science/kroger/xiaojiez/LCM/R/V1/
-# Purpose:  data for feature representation
+# Purpose:  
 # Population:  
 ########### Set up ########
 rm(list=ls())
 rm(list=c(''))
 
-# path = "/nfs/science/kroger/xiaojiez/LCM/R/V1/"
-path = "/Users/x644435/Desktop/Other/Kaggle/Instacart"
+# path = "/nfs/science/users/xiaojiez/P2020/"
+path = "/Users/x644435/Documents/Private/kaggle/M5"
 setwd(paste(path))
 
-#source("/nfs/science/kroger/xiaojiez/Rcode/FreqUsedRFunc.r")
+#source("/nfs/science/users/xiaojiez//OftenUsed/RCode/FreqUsedRFunc.r")
 source("/Users/x644435/Desktop/RCode/FreqUsedRFunc.r")
 
-library(ggplot2)
-library(dplyr)
-library(reshape2)
-library(strucchange)
-library(data.table)
-options(stringsAsFactors=FALSE)
 ####### Read all csv files from the directory #########
 datapath="/Users/x644435/Desktop/Other/Kaggle/Instacart/Rawdata/"
 
