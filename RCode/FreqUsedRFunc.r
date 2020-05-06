@@ -17,7 +17,18 @@ options(stringsAsFactors=FALSE)
 
 
 ################ General section: ######################
-###### Begin: headtail: return n rows of head and tail  ######
+###### Begin: my_head: return n rows of head and tail  ######
+#<- Example:  dt_view(dt)
+#' @export
+dt_view = function(dt, n=10){
+  n=min(n, dim(dt)[1])
+  View(dt[sample(.N, n, replace = FALSE)])
+} 
+### end: dt_view(dt, n=80)
+
+
+
+###### Begin: my_head: return n rows of head and tail  ######
 #<- Example:  my_head(dat, n=3)
 #' @export
 my_head = function(dat, n=2){
